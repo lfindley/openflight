@@ -3,8 +3,9 @@
 
 def _dry_run(*args: str):
     import subprocess
+    from pathlib import Path
 
-    repo_root = __file__.rsplit("/tests/", 1)[0]
+    repo_root = str(Path(__file__).parent.parent)
     return subprocess.run(
         ["bash", "scripts/start-kiosk.sh", *args, "--dry-run"],
         cwd=repo_root,
@@ -72,7 +73,7 @@ def test_startup_applies_kld7_latency_setup_before_server_start():
     server_start_idx = script.index("$SERVER_CMD &")
 
     assert "scripts/setup/setup_kld7_latency.sh" in script
-    assert "sudo -n \"$setup_script\" --latency 1" in script
+    assert 'sudo -n "$setup_script" --latency 1' in script
     assert setup_idx < server_start_idx
 
 
